@@ -2,15 +2,24 @@ import { CardConfigSchema } from '@/lib/cards/validation';
 import type { CardConfig } from '@/types/card';
 
 describe('CardConfigSchema', () => {
+  const createFlower = (type: 'rose' | 'tulip' | 'daisy' | 'sunflower', x = 0, y = 0, z = 1) => ({
+    type,
+    position: { x, y, z },
+    rotation: [0, 0, 0] as [number, number, number],
+    scale: 1,
+    color: '#ec4899',
+  });
+
   const validConfig: CardConfig = {
     flowers: [
-      {
-        type: 'rose',
-        position: { x: 0, y: 0, z: 1 },
-        rotation: [0, 0, 0],
-        scale: 1,
-        color: '#ec4899',
-      },
+      createFlower('rose', -1.5, 0, 2.5),
+      createFlower('tulip', 0, 0.3, 2.8),
+      createFlower('daisy', 1.5, 0, 2.5),
+      createFlower('sunflower', -1.8, 0.5, 1.2),
+      createFlower('rose', 0, 0.8, 1.5),
+      createFlower('tulip', 1.8, 0.5, 1.2),
+      createFlower('daisy', -0.8, 1, 0.3),
+      createFlower('sunflower', 0.8, 1, 0.3),
     ],
     theme: {
       background: '#fce7f3',
@@ -39,7 +48,7 @@ describe('CardConfigSchema', () => {
   it('should reject config with too many flowers', () => {
     const config = {
       ...validConfig,
-      flowers: Array(13).fill(validConfig.flowers[0]),
+      flowers: Array(9).fill(validConfig.flowers[0]),
     };
     const result = CardConfigSchema.safeParse(config);
     expect(result.success).toBe(false);

@@ -8,22 +8,24 @@ import { generateSlug } from '@/lib/cards/slug';
 import type { CardConfig } from '@/types/card';
 
 describe('Card Creation Integration', () => {
+  const createFlower = (type: 'rose' | 'tulip' | 'daisy' | 'sunflower', x = 0, y = 0, z = 1) => ({
+    type,
+    position: { x, y, z },
+    rotation: [0, 0, 0] as [number, number, number],
+    scale: 1,
+    color: '#ec4899',
+  });
+
   const validCardConfig: CardConfig = {
     flowers: [
-      {
-        type: 'rose',
-        position: { x: 0, y: 0, z: 1 },
-        rotation: [0, 0, 0],
-        scale: 1,
-        color: '#ec4899',
-      },
-      {
-        type: 'tulip',
-        position: { x: 2, y: 0, z: 1 },
-        rotation: [0, Math.PI / 4, 0],
-        scale: 1.2,
-        color: '#ef4444',
-      },
+      createFlower('rose', -1.5, 0, 2.5),
+      createFlower('tulip', 0, 0.3, 2.8),
+      createFlower('daisy', 1.5, 0, 2.5),
+      createFlower('sunflower', -1.8, 0.5, 1.2),
+      createFlower('rose', 0, 0.8, 1.5),
+      createFlower('tulip', 1.8, 0.5, 1.2),
+      createFlower('daisy', -0.8, 1, 0.3),
+      createFlower('sunflower', 0.8, 1, 0.3),
     ],
     theme: {
       background: '#fce7f3',
@@ -52,22 +54,29 @@ describe('Card Creation Integration', () => {
       expect(slugs.size).toBe(10);
     });
 
-    it('should handle minimum flower count', () => {
-      const minConfig = {
-        ...validCardConfig,
-        flowers: [validCardConfig.flowers[0]],
-      };
-      const result = CardConfigSchema.safeParse(minConfig);
+    it('should handle exactly 8 flowers', () => {
+      // MIN_FLOWERS and MAX_FLOWERS are both 8
+      const result = CardConfigSchema.safeParse(validCardConfig);
       expect(result.success).toBe(true);
+      expect(validCardConfig.flowers.length).toBe(8);
     });
 
-    it('should handle maximum flower count', () => {
+    it('should reject less than 8 flowers', () => {
+      const minConfig = {
+        ...validCardConfig,
+        flowers: validCardConfig.flowers.slice(0, 7),
+      };
+      const result = CardConfigSchema.safeParse(minConfig);
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject more than 8 flowers', () => {
       const maxConfig = {
         ...validCardConfig,
-        flowers: Array(12).fill(validCardConfig.flowers[0]),
+        flowers: [...validCardConfig.flowers, createFlower('rose')],
       };
       const result = CardConfigSchema.safeParse(maxConfig);
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(false);
     });
 
     it('should reject empty message', () => {
@@ -92,9 +101,12 @@ describe('Card Creation Integration', () => {
       ];
 
       flowerTypes.forEach((type) => {
+        const flowers = validCardConfig.flowers.map((f, i) =>
+          i === 0 ? { ...f, type } : f
+        );
         const config = {
           ...validCardConfig,
-          flowers: [{ ...validCardConfig.flowers[0], type }],
+          flowers,
         };
         const result = CardConfigSchema.safeParse(config);
         expect(result.success).toBe(true);

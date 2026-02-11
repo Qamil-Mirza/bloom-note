@@ -4,7 +4,7 @@ import { useWizard } from '@/hooks/use-wizard';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_FLOWER_COLORS, MAX_FLOWERS } from '@/lib/utils/constants';
 import type { FlowerType } from '@/types/flower';
-import { randomPosition } from '@/lib/utils/three-helpers';
+import { getBouquetPosition } from '@/lib/utils/three-helpers';
 
 const flowerOptions: { type: FlowerType; label: string; emoji: string }[] = [
   { type: 'rose', label: 'Rose', emoji: '🌹' },
@@ -21,10 +21,13 @@ export function StepPicker() {
       return;
     }
 
+    const position = getBouquetPosition(flowers.length);
+    const angle = Math.atan2(position.x, position.z);
+
     addFlower({
       type,
-      position: randomPosition(),
-      rotation: [0, Math.random() * Math.PI * 2, 0],
+      position,
+      rotation: [0, -angle, 0],
       scale: 1,
       color: DEFAULT_FLOWER_COLORS[type],
     });
@@ -34,7 +37,7 @@ export function StepPicker() {
     <div className="max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-center mb-2">Pick Your Flowers</h2>
       <p className="text-gray-600 text-center mb-8">
-        Choose {MIN_FLOWERS}-{MAX_FLOWERS} flowers for your bouquet
+        Choose {MAX_FLOWERS} flowers for your bouquet
       </p>
 
       {/* Flower selection grid */}

@@ -1,5 +1,5 @@
-export const MAX_FLOWERS = 12;
-export const MIN_FLOWERS = 1;
+export const MAX_FLOWERS = 8;
+export const MIN_FLOWERS = 8;
 export const MAX_MESSAGE_LENGTH = 300;
 export const SLUG_LENGTH = 10;
 

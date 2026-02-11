@@ -1,4 +1,4 @@
-import { autoArrangeFlowers, clamp, randomPosition } from '@/lib/utils/three-helpers';
+import { autoArrangeFlowers, clamp, getBouquetPosition } from '@/lib/utils/three-helpers';
 import type { FlowerConfig } from '@/types/flower';
 
 describe('three-helpers', () => {
@@ -11,16 +11,11 @@ describe('three-helpers', () => {
       color: '#ec4899',
     });
 
-    it('should arrange flowers in a circle', () => {
-      const flowers = [
-        createFlower('rose'),
-        createFlower('tulip'),
-        createFlower('daisy'),
-      ];
-
+    it('should arrange flowers using pre-determined positions', () => {
+      const flowers = Array(8).fill(null).map(() => createFlower('rose'));
       const arranged = autoArrangeFlowers(flowers);
 
-      expect(arranged).toHaveLength(3);
+      expect(arranged).toHaveLength(8);
       // Check that flowers are not all at origin
       const notAllAtOrigin = arranged.some(
         (f) => f.position.x !== 0 || f.position.z !== 0
@@ -42,24 +37,24 @@ describe('three-helpers', () => {
       expect(arranged[2].type).toBe('daisy');
     });
 
-    it('should set y position to 0', () => {
-      const flowers = [createFlower('rose'), createFlower('tulip')];
+    it('should use bouquet positions', () => {
+      const flowers = Array(8).fill(null).map(() => createFlower('rose'));
       const arranged = autoArrangeFlowers(flowers);
 
-      arranged.forEach((flower) => {
-        expect(flower.position.y).toBe(0);
-      });
+      // First flower should be at front-left position
+      expect(arranged[0].position.x).toBe(-1.5);
+      expect(arranged[0].position.z).toBe(2.5);
     });
 
-    it('should distribute flowers evenly', () => {
-      const flowers = Array(4).fill(null).map(() => createFlower('rose'));
+    it('should set appropriate rotations', () => {
+      const flowers = Array(8).fill(null).map(() => createFlower('rose'));
       const arranged = autoArrangeFlowers(flowers);
 
-      // With 4 flowers, they should be roughly 90 degrees apart
-      // We just check that they're not all in the same position
-      const positions = arranged.map((f) => `${f.position.x},${f.position.z}`);
-      const uniquePositions = new Set(positions);
-      expect(uniquePositions.size).toBe(4);
+      // All flowers should have rotations
+      arranged.forEach((flower) => {
+        expect(flower.rotation).toBeDefined();
+        expect(flower.rotation.length).toBe(3);
+      });
     });
   });
 
@@ -82,25 +77,34 @@ describe('three-helpers', () => {
     });
   });
 
-  describe('randomPosition', () => {
-    it('should generate position within bounds', () => {
-      for (let i = 0; i < 100; i++) {
-        const pos = randomPosition();
-        expect(pos.x).toBeGreaterThanOrEqual(-4);
-        expect(pos.x).toBeLessThanOrEqual(4);
-        expect(pos.y).toBe(0);
-        expect(pos.z).toBeGreaterThanOrEqual(-3);
-        expect(pos.z).toBeLessThanOrEqual(3);
-      }
+  describe('getBouquetPosition', () => {
+    it('should return pre-determined positions', () => {
+      const pos0 = getBouquetPosition(0);
+      expect(pos0.x).toBe(-1.5);
+      expect(pos0.y).toBe(0);
+      expect(pos0.z).toBe(2.5);
     });
 
-    it('should generate varied positions', () => {
-      const positions = Array(10).fill(null).map(() => randomPosition());
+    it('should return different positions for different indices', () => {
+      const pos0 = getBouquetPosition(0);
+      const pos1 = getBouquetPosition(1);
+
+      expect(pos0.x).not.toBe(pos1.x);
+    });
+
+    it('should return origin for out of bounds index', () => {
+      const pos = getBouquetPosition(100);
+      expect(pos.x).toBe(0);
+      expect(pos.y).toBe(0);
+      expect(pos.z).toBe(0);
+    });
+
+    it('should have 8 unique positions', () => {
+      const positions = Array(8).fill(null).map((_, i) => getBouquetPosition(i));
       const uniquePositions = new Set(
-        positions.map((p) => `${p.x},${p.z}`)
+        positions.map((p) => `${p.x},${p.y},${p.z}`)
       );
-      // Should have at least some variety (not all identical)
-      expect(uniquePositions.size).toBeGreaterThan(1);
+      expect(uniquePositions.size).toBe(8);
     });
   });
 });
