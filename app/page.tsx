@@ -9,6 +9,11 @@ import { Flower } from "@/components/three/flowers";
 import { OrbitControls } from "@react-three/drei";
 import { autoArrangeHeroFlowers } from "@/lib/utils/three-helpers";
 import { BouquetWrapper } from "@/components/three/bouquet-wrapper";
+import { WindProvider } from "@/components/three/physics/wind-provider";
+import { BouquetPhysicsRig } from "@/components/three/physics/bouquet-physics-rig";
+import { StemSpringRig } from "@/components/three/physics/stem-spring-rig";
+import { SceneEffects } from "@/components/three/effects";
+import { usePerformanceTier } from "@/hooks/use-performance-tier";
 import type { FlowerConfig } from "@/types/flower";
 
 const demoBouquet: FlowerConfig[] = autoArrangeHeroFlowers([
@@ -19,6 +24,35 @@ const demoBouquet: FlowerConfig[] = autoArrangeHeroFlowers([
   { type: "sunflower", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 0.9, color: "#fbbf24" },
   { type: "tulip", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.1, color: "#c084fc" },
 ]);
+
+function HeroScene() {
+  const { enableBloom } = usePerformanceTier();
+
+  return (
+    <>
+      <Lights />
+      <OrbitControls
+        enableZoom={false}
+        autoRotate
+        autoRotateSpeed={1.5}
+        enablePan={false}
+      />
+      <WindProvider>
+        <BouquetPhysicsRig>
+          <group position={[0, 0.2, 0]} scale={0.9}>
+            {demoBouquet.map((flower, i) => (
+              <StemSpringRig key={i} spatialOffset={i * 1.7}>
+                <Flower config={flower} />
+              </StemSpringRig>
+            ))}
+            <BouquetWrapper />
+          </group>
+        </BouquetPhysicsRig>
+      </WindProvider>
+      <SceneEffects enabled={enableBloom} />
+    </>
+  );
+}
 
 export default function Home() {
   return (
@@ -57,20 +91,8 @@ export default function Home() {
           <div
             className="w-[340px] h-[320px] md:w-[460px] md:h-[400px] rounded-2xl overflow-hidden mt-4 mb-4 flex items-center justify-center"
           >
-            <CanvasWrapper>
-              <Lights />
-              <OrbitControls
-                enableZoom={false}
-                autoRotate
-                autoRotateSpeed={1.5}
-                enablePan={false}
-              />
-              <group position={[0, 0.2, 0]} scale={0.9}>
-                {demoBouquet.map((flower, i) => (
-                  <Flower key={i} config={flower} />
-                ))}
-                <BouquetWrapper />
-              </group>
+            <CanvasWrapper enablePostProcessing>
+              <HeroScene />
             </CanvasWrapper>
           </div>
 

@@ -47,11 +47,7 @@ export function useCardAnimation({
         bouquetRef.current.rotation.y = eased * Math.PI * 2;
       }
     } else if (state === 'complete') {
-      // Subtle sway animation
-      const time = Date.now() * 0.001;
-      if (bouquetRef.current) {
-        bouquetRef.current.rotation.z = Math.sin(time * 0.5) * 0.05;
-      }
+      // Idle sway now handled by BouquetPhysicsRig + StemSpringRig
     }
   });
 

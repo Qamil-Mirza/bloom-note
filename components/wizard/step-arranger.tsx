@@ -5,6 +5,9 @@ import { CanvasWrapper } from '@/components/three/canvas-wrapper';
 import { Lights } from '@/components/three/lights';
 import { Flower } from '@/components/three/flowers';
 import { OrbitControls } from '@react-three/drei';
+import { WindProvider } from '@/components/three/physics/wind-provider';
+import { BouquetPhysicsRig } from '@/components/three/physics/bouquet-physics-rig';
+import { StemSpringRig } from '@/components/three/physics/stem-spring-rig';
 import { useState } from 'react';
 
 export function StepArranger() {
@@ -27,14 +30,17 @@ export function StepArranger() {
             <CanvasWrapper>
               <Lights />
               <OrbitControls enablePan={false} />
-              {flowers.map((flower, index) => (
-                <group
-                  key={index}
-                  onClick={() => setSelectedIndex(index)}
-                >
-                  <Flower config={flower} />
-                </group>
-              ))}
+              <WindProvider>
+                <BouquetPhysicsRig>
+                  {flowers.map((flower, index) => (
+                    <StemSpringRig key={index} spatialOffset={index * 1.7}>
+                      <group onClick={() => setSelectedIndex(index)}>
+                        <Flower config={flower} />
+                      </group>
+                    </StemSpringRig>
+                  ))}
+                </BouquetPhysicsRig>
+              </WindProvider>
             </CanvasWrapper>
           </div>
         </div>

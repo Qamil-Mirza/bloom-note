@@ -1,22 +1,35 @@
 'use client';
 
+import { Environment } from '@react-three/drei';
+
 export function Lights() {
   return (
     <>
-      {/* Ambient light for base illumination */}
-      <ambientLight intensity={0.6} />
+      {/* IBL environment for realistic reflections */}
+      <Environment preset="studio" />
 
-      {/* Main directional light (sun) */}
+      {/* Low ambient for shadow lift */}
+      <ambientLight intensity={0.15} />
+
+      {/* Key light — warm, upper-right */}
       <directionalLight
-        position={[5, 10, 5]}
-        intensity={0.8}
+        position={[5, 8, 4]}
+        intensity={1.2}
+        color="#fff5e6"
       />
 
-      {/* Fill light from below with pink tint */}
+      {/* Fill light — cool, left */}
+      <directionalLight
+        position={[-6, 3, 2]}
+        intensity={0.4}
+        color="#e0e8ff"
+      />
+
+      {/* Rim light — pink, behind */}
       <pointLight
-        position={[0, -5, 3]}
-        intensity={0.3}
-        color="#ffeeff"
+        position={[0, 4, -6]}
+        intensity={0.6}
+        color="#ff8fbf"
       />
     </>
   );
