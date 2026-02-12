@@ -7,10 +7,11 @@ import { CanvasWrapper } from "@/components/three/canvas-wrapper";
 import { Lights } from "@/components/three/lights";
 import { Flower } from "@/components/three/flowers";
 import { OrbitControls } from "@react-three/drei";
-import { autoArrangeFlowers } from "@/lib/utils/three-helpers";
+import { autoArrangeHeroFlowers } from "@/lib/utils/three-helpers";
+import { BouquetWrapper } from "@/components/three/bouquet-wrapper";
 import type { FlowerConfig } from "@/types/flower";
 
-const demoBouquet: FlowerConfig[] = autoArrangeFlowers([
+const demoBouquet: FlowerConfig[] = autoArrangeHeroFlowers([
   { type: "rose", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.2, color: "#ec4899" },
   { type: "tulip", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.0, color: "#f43f5e" },
   { type: "daisy", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.1, color: "#fecce3" },
@@ -54,7 +55,7 @@ export default function Home() {
         >
           {/* 3D Bouquet Preview */}
           <div
-            className="w-[320px] h-[280px] md:w-[420px] md:h-[340px] rounded-2xl overflow-hidden mb-8"
+            className="w-[340px] h-[320px] md:w-[460px] md:h-[400px] rounded-2xl overflow-hidden mt-4 mb-4 flex items-center justify-center"
           >
             <CanvasWrapper>
               <Lights />
@@ -64,10 +65,11 @@ export default function Home() {
                 autoRotateSpeed={1.5}
                 enablePan={false}
               />
-              <group position={[0, -2, 0]}>
+              <group position={[0, 0.2, 0]} scale={0.9}>
                 {demoBouquet.map((flower, i) => (
                   <Flower key={i} config={flower} />
                 ))}
+                <BouquetWrapper />
               </group>
             </CanvasWrapper>
           </div>
