@@ -75,7 +75,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section with Lamp Effect + 3D Bouquet */}
+      {/* Hero Section with Lamp Effect */}
       <LampContainer className="min-h-screen pt-20">
         <motion.div
           initial={{ opacity: 0.5, y: 100 }}
@@ -87,14 +87,6 @@ export default function Home() {
           }}
           className="flex flex-col items-center"
         >
-          {/* 3D Bouquet Preview */}
-          <div
-            className="w-[340px] h-[320px] md:w-[460px] md:h-[400px] rounded-2xl overflow-hidden mt-4 mb-4 flex items-center justify-center"
-          >
-            <CanvasWrapper enablePostProcessing>
-              <HeroScene />
-            </CanvasWrapper>
-          </div>
 
           <h1 className="bg-gradient-to-br from-romantic-200 via-white to-romantic-300 py-4 bg-clip-text text-center text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent">
             Create a 3D

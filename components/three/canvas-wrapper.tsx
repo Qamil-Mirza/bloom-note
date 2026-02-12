@@ -15,7 +15,7 @@ export function CanvasWrapper({ children, className = '', enablePostProcessing =
   const { dpr } = usePerformanceTier();
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative w-full h-full ${className}`}>
       <Canvas
         camera={{ position: [0, 5, 10], fov: 50 }}
         dpr={dpr}

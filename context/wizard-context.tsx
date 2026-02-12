@@ -20,6 +20,7 @@ interface WizardActions {
   addFlower: (flower: FlowerConfig) => void;
   removeFlower: (index: number) => void;
   updateFlower: (index: number, updates: Partial<FlowerConfig>) => void;
+  setFlowers: (flowers: FlowerConfig[]) => void;
   setTheme: (theme: CardTheme) => void;
   setMessage: (message: CardMessage) => void;
   reset: () => void;
@@ -59,6 +60,7 @@ export function WizardProvider({ children }: { children: ReactNode }) {
       setFlowers((f) =>
         f.map((flower, i) => (i === index ? { ...flower, ...updates } : flower))
       ),
+    setFlowers,
     setTheme,
     setMessage,
     reset: () => {
