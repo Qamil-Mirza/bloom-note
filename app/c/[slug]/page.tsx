@@ -15,11 +15,11 @@ export async function generateMetadata({ params }: CardPageProps) {
   }
 
   return {
-    title: `Valentine Card - BloomNote`,
-    description: card.message || 'A special 3D Valentine card made for you!',
+    title: `Valentine Gift - BloomNote`,
+    description: card.message || 'A special 3D Valentine gift made for you!',
     openGraph: {
-      title: `You received a Valentine card! 💐`,
-      description: 'Open to see your personalized 3D bouquet',
+      title: `You received a Valentine gift! 💝`,
+      description: 'Open to see your personalized 3D Valentine gift',
       images: ['/og-image.png'],
     },
   };

@@ -3,56 +3,6 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { LampContainer } from "@/components/ui/lamp";
-import { CanvasWrapper } from "@/components/three/canvas-wrapper";
-import { Lights } from "@/components/three/lights";
-import { Flower } from "@/components/three/flowers";
-import { OrbitControls } from "@react-three/drei";
-import { autoArrangeHeroFlowers } from "@/lib/utils/three-helpers";
-import { BouquetWrapper } from "@/components/three/bouquet-wrapper";
-import { WindProvider } from "@/components/three/physics/wind-provider";
-import { BouquetPhysicsRig } from "@/components/three/physics/bouquet-physics-rig";
-import { StemSpringRig } from "@/components/three/physics/stem-spring-rig";
-import { SceneEffects } from "@/components/three/effects";
-import { usePerformanceTier } from "@/hooks/use-performance-tier";
-import type { FlowerConfig } from "@/types/flower";
-
-const demoBouquet: FlowerConfig[] = autoArrangeHeroFlowers([
-  { type: "rose", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.2, color: "#ec4899" },
-  { type: "tulip", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.0, color: "#f43f5e" },
-  { type: "daisy", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.1, color: "#fecce3" },
-  { type: "rose", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.0, color: "#fb7185" },
-  { type: "sunflower", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 0.9, color: "#fbbf24" },
-  { type: "tulip", position: { x: 0, y: 0, z: 0 }, rotation: [0, 0, 0], scale: 1.1, color: "#c084fc" },
-]);
-
-function HeroScene() {
-  const { enableBloom } = usePerformanceTier();
-
-  return (
-    <>
-      <Lights />
-      <OrbitControls
-        enableZoom={false}
-        autoRotate
-        autoRotateSpeed={1.5}
-        enablePan={false}
-      />
-      <WindProvider>
-        <BouquetPhysicsRig>
-          <group position={[0, 0.2, 0]} scale={0.9}>
-            {demoBouquet.map((flower, i) => (
-              <StemSpringRig key={i} spatialOffset={i * 1.7}>
-                <Flower config={flower} />
-              </StemSpringRig>
-            ))}
-            <BouquetWrapper />
-          </group>
-        </BouquetPhysicsRig>
-      </WindProvider>
-      <SceneEffects enabled={enableBloom} />
-    </>
-  );
-}
 
 export default function Home() {
   return (
@@ -61,7 +11,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md bg-slate-950/60 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="text-2xl">💐</span>
+            <span className="text-2xl">🎁</span>
             <span className="text-xl font-bold text-white tracking-tight">
               BloomNote
             </span>
@@ -89,13 +39,14 @@ export default function Home() {
         >
 
           <h1 className="bg-gradient-to-br from-romantic-200 via-white to-romantic-300 py-4 bg-clip-text text-center text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent">
-            Create a 3D
+            Send a 3D
             <br />
-            Valentine Card
+            Valentine Gift
           </h1>
           <p className="text-romantic-200/60 text-center text-lg md:text-xl max-w-xl mt-6 leading-relaxed">
-            Build personalized 3D pop-up cards with animated flower bouquets.
-            Share with a link. Free forever.
+            Pick a 3D gift, write your Valentine&apos;s message, and share with a link.
+            Watch them open an animated envelope revealing your gift.
+            Free forever.
           </p>
           <Link
             href="/create"
@@ -117,7 +68,7 @@ export default function Home() {
       <footer className="border-t border-white/5 py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg">💐</span>
+            <span className="text-lg">🎁</span>
             <span className="text-sm font-medium text-slate-400">
               BloomNote
             </span>

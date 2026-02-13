@@ -5,11 +5,11 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'BloomNote - Create 3D Valentine Cards',
-  description: 'Create beautiful personalized 3D pop-up Valentine cards with animated flower bouquets. No signup required, free forever.',
+  title: 'BloomNote - Send 3D Valentine Gifts',
+  description: 'Pick a 3D gift, write your Valentine\'s message, and share with a link. Free forever, no signup required.',
   openGraph: {
-    title: 'BloomNote - 3D Valentine Card Maker',
-    description: 'Create stunning 3D Valentine cards in minutes',
+    title: 'BloomNote - 3D Valentine Gift Maker',
+    description: 'Send stunning 3D Valentine gifts in minutes',
     images: ['/og-image.png'],
   },
 };

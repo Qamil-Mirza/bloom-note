@@ -1,15 +1,15 @@
 'use client';
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { CardConfig, CardTheme, CardMessage } from '@/types/card';
-import type { FlowerConfig } from '@/types/flower';
+import type { CardTheme, CardMessage } from '@/types/card';
+import type { GiftPresetId } from '@/types/gift';
 import { THEME_PRESETS } from '@/lib/utils/constants';
 
-type WizardStep = 1 | 2 | 3;
+type WizardStep = 1 | 2;
 
 interface WizardState {
   currentStep: WizardStep;
-  flowers: FlowerConfig[];
+  giftPresetId: GiftPresetId | null;
   theme: CardTheme;
   message: CardMessage;
 }
@@ -17,10 +17,7 @@ interface WizardState {
 interface WizardActions {
   nextStep: () => void;
   prevStep: () => void;
-  addFlower: (flower: FlowerConfig) => void;
-  removeFlower: (index: number) => void;
-  updateFlower: (index: number, updates: Partial<FlowerConfig>) => void;
-  setFlowers: (flowers: FlowerConfig[]) => void;
+  setGiftPresetId: (id: GiftPresetId) => void;
   setTheme: (theme: CardTheme) => void;
   setMessage: (message: CardMessage) => void;
   reset: () => void;
@@ -30,20 +27,9 @@ type WizardContextType = WizardState & WizardActions;
 
 const WizardContext = createContext<WizardContextType | null>(null);
 
-const initialState: WizardState = {
-  currentStep: 1,
-  flowers: [],
-  theme: THEME_PRESETS.romantic,
-  message: {
-    text: '',
-    font: 'cursive',
-    color: '#4b5563',
-  },
-};
-
 export function WizardProvider({ children }: { children: ReactNode }) {
   const [currentStep, setCurrentStep] = useState<WizardStep>(1);
-  const [flowers, setFlowers] = useState<FlowerConfig[]>([]);
+  const [giftPresetId, setGiftPresetId] = useState<GiftPresetId | null>(null);
   const [theme, setTheme] = useState<CardTheme>(THEME_PRESETS.romantic);
   const [message, setMessage] = useState<CardMessage>({
     text: '',
@@ -52,20 +38,14 @@ export function WizardProvider({ children }: { children: ReactNode }) {
   });
 
   const actions: WizardActions = {
-    nextStep: () => setCurrentStep((s) => Math.min(s + 1, 3) as WizardStep),
+    nextStep: () => setCurrentStep((s) => Math.min(s + 1, 2) as WizardStep),
     prevStep: () => setCurrentStep((s) => Math.max(s - 1, 1) as WizardStep),
-    addFlower: (flower) => setFlowers((f) => [...f, flower]),
-    removeFlower: (index) => setFlowers((f) => f.filter((_, i) => i !== index)),
-    updateFlower: (index, updates) =>
-      setFlowers((f) =>
-        f.map((flower, i) => (i === index ? { ...flower, ...updates } : flower))
-      ),
-    setFlowers,
+    setGiftPresetId,
     setTheme,
     setMessage,
     reset: () => {
       setCurrentStep(1);
-      setFlowers([]);
+      setGiftPresetId(null);
       setTheme(THEME_PRESETS.romantic);
       setMessage({ text: '', font: 'cursive', color: '#4b5563' });
     },
@@ -75,7 +55,7 @@ export function WizardProvider({ children }: { children: ReactNode }) {
     <WizardContext.Provider
       value={{
         currentStep,
-        flowers,
+        giftPresetId,
         theme,
         message,
         ...actions,

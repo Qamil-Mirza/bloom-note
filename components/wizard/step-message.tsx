@@ -23,9 +23,9 @@ export function StepMessage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-2">Add Your Message</h2>
+      <h2 className="text-2xl font-bold text-center mb-2">Write Your Valentine&apos;s Message</h2>
       <p className="text-gray-600 text-center mb-8">
-        Personalize your card with a heartfelt message
+        Add a heartfelt message to your Valentine&apos;s gift
       </p>
 
       <div className="space-y-6">

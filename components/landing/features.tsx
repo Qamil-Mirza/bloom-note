@@ -1,8 +1,8 @@
 const features = [
   {
-    icon: '🎨',
+    icon: '🎁',
     title: 'Easy to Create',
-    description: 'Pick flowers, arrange them, and write your message in under 3 minutes.',
+    description: 'Pick a Valentine gift, write your message, and share in under 2 minutes.',
   },
   {
     icon: '🔗',
@@ -12,7 +12,7 @@ const features = [
   {
     icon: '✨',
     title: 'Beautiful 3D',
-    description: 'Stunning pop-up animation that works on any device.',
+    description: 'Stunning envelope-open animation that works on any device.',
   },
   {
     icon: '💝',
@@ -25,9 +25,9 @@ const features = [
     description: 'Optimized for phones, tablets, and desktops.',
   },
   {
-    icon: '🎁',
+    icon: '🎀',
     title: 'Personal Touch',
-    description: 'Customize flowers, colors, themes, and messages.',
+    description: 'Customize gifts, colors, themes, and messages.',
   },
 ];
 

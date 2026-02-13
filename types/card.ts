@@ -1,4 +1,4 @@
-import type { FlowerConfig } from './flower';
+import type { GiftPresetId } from './gift';
 
 export interface CardTheme {
   background: string; // hex color
@@ -14,15 +14,27 @@ export interface CardMessage {
 }
 
 export interface CardConfig {
-  flowers: FlowerConfig[];
+  version: 2;
+  giftPresetId: GiftPresetId;
   theme: CardTheme;
   message: CardMessage;
+}
+
+/** Cards created before the gift card migration */
+export interface LegacyCardConfig {
+  flowers: unknown[];
+  theme: CardTheme;
+  message: CardMessage;
+}
+
+export function isLegacyConfig(config: CardConfig | LegacyCardConfig): config is LegacyCardConfig {
+  return !('version' in config) || (config as CardConfig).version !== 2;
 }
 
 export interface Card {
   id: string;
   slug: string;
-  config: CardConfig;
+  config: CardConfig | LegacyCardConfig;
   message: string;
   created_at: string;
   views: number;

@@ -8,25 +8,9 @@ import { generateSlug } from '@/lib/cards/slug';
 import type { CardConfig } from '@/types/card';
 
 describe('Card Creation Integration', () => {
-  const createFlower = (type: 'rose' | 'tulip' | 'daisy' | 'sunflower', x = 0, y = 0, z = 1) => ({
-    type,
-    position: { x, y, z },
-    rotation: [0, 0, 0] as [number, number, number],
-    scale: 1,
-    color: '#ec4899',
-  });
-
   const validCardConfig: CardConfig = {
-    flowers: [
-      createFlower('rose', -1.5, 0, 2.5),
-      createFlower('tulip', 0, 0.3, 2.8),
-      createFlower('daisy', 1.5, 0, 2.5),
-      createFlower('sunflower', -1.8, 0.5, 1.2),
-      createFlower('rose', 0, 0.8, 1.5),
-      createFlower('tulip', 1.8, 0.5, 1.2),
-      createFlower('daisy', -0.8, 1, 0.3),
-      createFlower('sunflower', 0.8, 1, 0.3),
-    ],
+    version: 2,
+    giftPresetId: 'tulips',
     theme: {
       background: '#fce7f3',
       cardColor: '#ffffff',
@@ -54,32 +38,22 @@ describe('Card Creation Integration', () => {
       expect(slugs.size).toBe(10);
     });
 
-    it('should handle exactly 8 flowers', () => {
-      // MIN_FLOWERS and MAX_FLOWERS are both 8
-      const result = CardConfigSchema.safeParse(validCardConfig);
-      expect(result.success).toBe(true);
-      expect(validCardConfig.flowers.length).toBe(8);
+    it('should accept all gift preset ids', () => {
+      const ids = ['tulips'] as const;
+      ids.forEach((id) => {
+        const config = { ...validCardConfig, giftPresetId: id };
+        const result = CardConfigSchema.safeParse(config);
+        expect(result.success).toBe(true);
+      });
     });
 
-    it('should reject less than 8 flowers', () => {
-      const minConfig = {
-        ...validCardConfig,
-        flowers: validCardConfig.flowers.slice(0, 7),
-      };
-      const result = CardConfigSchema.safeParse(minConfig);
+    it('should reject invalid gift preset id', () => {
+      const config = { ...validCardConfig, giftPresetId: 'invalid' };
+      const result = CardConfigSchema.safeParse(config);
       expect(result.success).toBe(false);
     });
 
-    it('should reject more than 8 flowers', () => {
-      const maxConfig = {
-        ...validCardConfig,
-        flowers: [...validCardConfig.flowers, createFlower('rose')],
-      };
-      const result = CardConfigSchema.safeParse(maxConfig);
-      expect(result.success).toBe(false);
-    });
-
-    it('should reject empty message', () => {
+    it('should accept empty message', () => {
       const config = {
         ...validCardConfig,
         message: {
@@ -88,29 +62,7 @@ describe('Card Creation Integration', () => {
         },
       };
       const result = CardConfigSchema.safeParse(config);
-      // Empty message should be allowed
       expect(result.success).toBe(true);
-    });
-
-    it('should validate all flower types', () => {
-      const flowerTypes: Array<'rose' | 'tulip' | 'daisy' | 'sunflower'> = [
-        'rose',
-        'tulip',
-        'daisy',
-        'sunflower',
-      ];
-
-      flowerTypes.forEach((type) => {
-        const flowers = validCardConfig.flowers.map((f, i) =>
-          i === 0 ? { ...f, type } : f
-        );
-        const config = {
-          ...validCardConfig,
-          flowers,
-        };
-        const result = CardConfigSchema.safeParse(config);
-        expect(result.success).toBe(true);
-      });
     });
 
     it('should validate all theme presets', () => {
@@ -145,6 +97,12 @@ describe('Card Creation Integration', () => {
         const result = CardConfigSchema.safeParse(config);
         expect(result.success).toBe(true);
       });
+    });
+
+    it('should require version 2', () => {
+      const { version, ...rest } = validCardConfig;
+      const result = CardConfigSchema.safeParse(rest);
+      expect(result.success).toBe(false);
     });
   });
 });

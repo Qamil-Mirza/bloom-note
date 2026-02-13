@@ -3,19 +3,17 @@
 import { useWizard, WizardProvider } from '@/context/wizard-context';
 import { Button } from '@/components/ui/button';
 import { ProgressStepper } from '@/components/ui/progress-stepper';
-import { StepPicker } from './step-picker';
-import { StepArranger } from './step-arranger';
+import { StepGiftPicker } from './step-gift-picker';
 import { StepMessage } from './step-message';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MIN_FLOWERS } from '@/lib/utils/constants';
 
 function WizardContent() {
   const {
     currentStep,
     nextStep,
     prevStep,
-    flowers,
+    giftPresetId,
     theme,
     message,
   } = useWizard();
@@ -23,17 +21,17 @@ function WizardContent() {
   const router = useRouter();
 
   const canProceed = () => {
-    if (currentStep === 1) return flowers.length >= MIN_FLOWERS;
+    if (currentStep === 1) return giftPresetId !== null;
     if (currentStep === 2) return true;
-    if (currentStep === 3) return true;
     return false;
   };
 
   const handlePublish = async () => {
+    if (!giftPresetId) return;
     setIsPublishing(true);
 
     try {
-      const config = { flowers, theme, message };
+      const config = { version: 2 as const, giftPresetId, theme, message };
 
       const response = await fetch('/api/cards', {
         method: 'POST',
@@ -60,13 +58,12 @@ function WizardContent() {
       <div className="max-w-6xl mx-auto">
         <ProgressStepper
           currentStep={currentStep}
-          steps={['Pick Flowers', 'Arrange', 'Message']}
+          steps={['Choose Gift', 'Message']}
         />
 
         <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-          {currentStep === 1 && <StepPicker />}
-          {currentStep === 2 && <StepArranger />}
-          {currentStep === 3 && <StepMessage />}
+          {currentStep === 1 && <StepGiftPicker />}
+          {currentStep === 2 && <StepMessage />}
         </div>
 
         {/* Navigation */}
@@ -79,7 +76,7 @@ function WizardContent() {
             Back
           </Button>
 
-          {currentStep < 3 ? (
+          {currentStep < 2 ? (
             <Button
               onClick={nextStep}
               disabled={!canProceed()}

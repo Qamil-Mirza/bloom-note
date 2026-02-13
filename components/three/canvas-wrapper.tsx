@@ -9,21 +9,27 @@ interface CanvasWrapperProps {
   children: React.ReactNode;
   className?: string;
   enablePostProcessing?: boolean;
+  cameraPosition?: [number, number, number];
+  fov?: number;
 }
 
-export function CanvasWrapper({ children, className = '', enablePostProcessing = false }: CanvasWrapperProps) {
+export function CanvasWrapper({
+  children,
+  className = '',
+  enablePostProcessing = false,
+  cameraPosition = [0, 1.5, 7],
+  fov = 45,
+}: CanvasWrapperProps) {
   const { dpr } = usePerformanceTier();
 
   return (
     <div className={`relative w-full h-full ${className}`}>
       <Canvas
-        camera={{ position: [0, 5, 10], fov: 50 }}
+        camera={{ position: cameraPosition, fov }}
         dpr={dpr}
         gl={{
           antialias: true,
           alpha: true,
-          // Only apply tone mapping here when postprocessing is NOT active
-          // (postprocessing has its own ToneMapping pass to avoid double-mapping)
           toneMapping: enablePostProcessing ? THREE.NoToneMapping : THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.0,
         }}

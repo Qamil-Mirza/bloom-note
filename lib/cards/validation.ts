@@ -1,19 +1,7 @@
 import { z } from 'zod';
-import { MAX_FLOWERS, MIN_FLOWERS, MAX_MESSAGE_LENGTH } from '@/lib/utils/constants';
+import { MAX_MESSAGE_LENGTH } from '@/lib/utils/constants';
 
-const FlowerPositionSchema = z.object({
-  x: z.number().min(-5).max(5),
-  y: z.number().min(-2).max(5),
-  z: z.number().min(0).max(3),
-});
-
-const FlowerConfigSchema = z.object({
-  type: z.enum(['rose', 'tulip', 'daisy', 'sunflower']),
-  position: FlowerPositionSchema,
-  rotation: z.tuple([z.number(), z.number(), z.number()]),
-  scale: z.number().min(0.5).max(2.0),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-});
+const GIFT_PRESET_IDS = ['tulips'] as const;
 
 const CardThemeSchema = z.object({
   background: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
@@ -29,7 +17,8 @@ const CardMessageSchema = z.object({
 });
 
 export const CardConfigSchema = z.object({
-  flowers: z.array(FlowerConfigSchema).min(MIN_FLOWERS).max(MAX_FLOWERS),
+  version: z.literal(2),
+  giftPresetId: z.enum(GIFT_PRESET_IDS),
   theme: CardThemeSchema,
   message: CardMessageSchema,
 });

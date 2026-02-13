@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils/cn';
 
 interface ProgressStepperProps {
-  currentStep: 1 | 2 | 3;
+  currentStep: number;
   steps: string[];
 }
 
