@@ -81,7 +81,7 @@ export default function Home() {
       </LampContainer>
 
       {/* Video Demo Section */}
-      <section className="relative z-10 -mt-20 sm:-mt-32 md:-mt-48 pb-24 px-6 bg-slate-950">
+      <section className="relative z-10 -mt-16 sm:-mt-16 md:-mt-20 pb-24 px-6 bg-slate-950"> 
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             See it in action

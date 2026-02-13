@@ -1,4 +1,4 @@
-import { WizardContainer } from '@/components/wizard/wizard-container';
+import { WizardContainer } from '@/components/wizard/wizard-container'; 
 
 export const metadata = {
   title: 'Create Card - BloomNote',
