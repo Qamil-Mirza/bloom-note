@@ -2,16 +2,15 @@
 
 import { useRef, useState, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, Text } from '@react-three/drei';
 import { EnvelopeModel } from './envelope-model';
 import { GiftModel } from '../gift-model';
 import { Lights } from '../lights';
 import { SceneEffects } from '../effects';
 import { usePerformanceTier } from '@/hooks/use-performance-tier';
 import type { GiftPresetId } from '@/types/gift';
-import * as THREE from 'three';
 
-export type AnimationState = 'idle' | 'opening' | 'rising' | 'message' | 'complete';
+export type AnimationState = 'idle' | 'opening' | 'popping' | 'message' | 'complete';
 
 interface EnvelopeSceneProps {
   giftPresetId: GiftPresetId;
@@ -24,6 +23,13 @@ function lerp(a: number, b: number, t: number) {
   return a + (b - a) * Math.min(Math.max(t, 0), 1);
 }
 
+// easeOutBack — slight overshoot for a "pop" feel
+function easeOutBack(t: number) {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 function AnimatedScene({
   giftPresetId,
   accentColor,
@@ -33,10 +39,16 @@ function AnimatedScene({
   const { enableBloom } = usePerformanceTier();
   const [animState, setAnimState] = useState<AnimationState>(autoPlay ? 'opening' : 'idle');
   const timeRef = useRef(0);
+
+  // Envelope animated values
   const flapAngleRef = useRef(0);
+  const envelopeYRef = useRef(0);
+  const envelopeZRef = useRef(0);
+  const envelopeScaleRef = useRef(1);
+
+  // Gift animated values
   const giftYRef = useRef(-1);
   const giftScaleRef = useRef(0);
-  const envelopeYRef = useRef(0);
 
   const updateAnimState = useCallback(
     (state: AnimationState) => {
@@ -60,23 +72,32 @@ function AnimatedScene({
     const t = timeRef.current;
 
     if (animState === 'opening') {
-      // 0-1s: flap rotates 0 → PI
+      // 0–1s: flap rotates open
       const flapT = Math.min(t / 1.0, 1);
       flapAngleRef.current = lerp(0, Math.PI, flapT);
 
       if (t >= 1.0) {
-        updateAnimState('rising');
+        updateAnimState('popping');
       }
     }
 
-    if (animState === 'rising') {
-      // 1-2.5s: gift rises, envelope slides down
-      const risingT = Math.min((t - 1.0) / 1.5, 1);
-      const eased = 1 - Math.pow(1 - risingT, 3); // easeOutCubic
-      giftYRef.current = lerp(-1, 2.5, eased);
-      giftScaleRef.current = lerp(0, 1, eased);
-      envelopeYRef.current = lerp(0, -3, eased);
-      flapAngleRef.current = Math.PI;
+    if (animState === 'popping') {
+      // 1–2.5s: gift pops to center, envelope retreats & shrinks & closes
+      const popT = Math.min((t - 1.0) / 1.5, 1);
+      const popEased = easeOutBack(popT);
+      const envelopeEased = 1 - Math.pow(1 - popT, 3); // easeOutCubic
+
+      // Gift pops from inside envelope to screen center
+      giftYRef.current = lerp(-1, 1.5, popEased);
+      giftScaleRef.current = lerp(0, 1, popEased);
+
+      // Envelope moves back (z), down (y), and shrinks
+      envelopeZRef.current = lerp(0, -8, envelopeEased);
+      envelopeYRef.current = lerp(0, -2, envelopeEased);
+      envelopeScaleRef.current = lerp(1, 0.35, envelopeEased);
+
+      // Flap closes back as envelope retreats
+      flapAngleRef.current = lerp(Math.PI, 0, envelopeEased);
 
       if (t >= 2.5) {
         updateAnimState('message');
@@ -84,12 +105,19 @@ function AnimatedScene({
     }
 
     if (animState === 'message') {
-      // 2.5-3.5s: gift settles to idle rotation position
+      // 2.5–3.5s: gift settles, message overlay slides in
       const messageT = Math.min((t - 2.5) / 1.0, 1);
-      giftYRef.current = lerp(2.5, 1.5, messageT);
-      flapAngleRef.current = Math.PI;
+      const eased = 1 - Math.pow(1 - messageT, 2);
+
+      // Gently settle gift to final position
+      giftYRef.current = lerp(1.5, 1.2, eased);
       giftScaleRef.current = 1;
-      envelopeYRef.current = lerp(-3, -4, messageT);
+
+      // Envelope continues to rest in background
+      envelopeZRef.current = -8;
+      envelopeYRef.current = lerp(-2, -2.5, eased);
+      envelopeScaleRef.current = 0.35;
+      flapAngleRef.current = 0;
 
       if (t >= 3.5) {
         updateAnimState('complete');
@@ -102,22 +130,38 @@ function AnimatedScene({
       <Lights />
 
       <group onClick={handleClick}>
-        {/* Envelope */}
-        <group position={[0, envelopeYRef.current, 0]}>
+        {/* Envelope — retreats behind gift */}
+        <group
+          position={[0, envelopeYRef.current, envelopeZRef.current]}
+          scale={envelopeScaleRef.current}
+        >
           <EnvelopeModel
             flapAngle={flapAngleRef.current}
             accentColor={accentColor}
           />
         </group>
 
-        {/* Gift */}
+        {/* Guiding text — visible only before opening */}
+        {animState === 'idle' && (
+          <Text
+            position={[0, -2.8, 0.1]}
+            fontSize={0.35}
+            color="#9a9080"
+            anchorX="center"
+            anchorY="middle"
+          >
+            Tap to open
+          </Text>
+        )}
+
+        {/* Gift — pops to center */}
         <group
           position={[0, giftYRef.current, 0]}
           scale={giftScaleRef.current}
         >
           <GiftModel
             presetId={giftPresetId}
-            autoRotate={animState === 'complete'}
+            autoRotate={animState === 'complete' || animState === 'message'}
           />
         </group>
       </group>
