@@ -22,7 +22,7 @@ export function MessageCardOverlay({ visible, message, theme }: MessageCardOverl
           className="fixed bottom-6 sm:bottom-10 inset-x-0 z-20 flex justify-center px-4 sm:px-6"
           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
-          <div className="w-full max-w-sm sm:max-w-md bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-xl shadow-black/10">
+          <div className="w-full max-w-sm sm:max-w-md bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-xl shadow-black/10 overflow-hidden">
             {/* Top accent bar */}
             <div
               className="h-0.5 w-16 mx-auto rounded-full mb-5"
@@ -39,7 +39,7 @@ export function MessageCardOverlay({ visible, message, theme }: MessageCardOverl
               </span>
               <p
                 className={cn(
-                  'text-center text-lg leading-relaxed',
+                  'text-center text-lg leading-relaxed break-words',
                   message.font === 'cursive' && 'font-cursive',
                   message.font === 'serif' && 'font-serif'
                 )}

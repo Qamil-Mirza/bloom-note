@@ -112,12 +112,12 @@ export function StepMessage() {
           style={{ backgroundColor: theme.background }}
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-lg"
+            className="bg-white p-6 rounded-lg shadow-lg overflow-hidden"
             style={{ borderColor: theme.accent, borderWidth: '2px' }}
           >
             <p
               className={cn(
-                'text-center text-lg',
+                'text-center text-lg break-words',
                 message.font === 'cursive' && 'font-cursive',
                 message.font === 'serif' && 'font-serif'
               )}
