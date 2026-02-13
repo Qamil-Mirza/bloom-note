@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { AnimatePresence, motion } from 'motion/react';
 import type { AnimationState } from '@/components/three/envelope/envelope-scene';
 
@@ -28,7 +29,7 @@ export function BrandWatermark({ accentColor, animState }: BrandWatermarkProps) 
             paddingLeft: 'env(safe-area-inset-left)',
           }}
         >
-          💌 BloomNote 
+          <Image src="/logos/bloomnotelogotransparent.png" alt="" width={64} height={64} className="inline-block mr-1" />BloomNote
         </motion.a>
       )}
     </AnimatePresence>

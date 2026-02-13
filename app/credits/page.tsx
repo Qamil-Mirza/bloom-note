@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const models = [
   {
@@ -57,7 +58,7 @@ export default function CreditsPage() {
       <nav className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md bg-slate-950/60 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="text-2xl">🎁</span>
+            <Image src="/logos/bloomnotelogotransparent.png" alt="BloomNote" width={80} height={80} />
             <span className="text-xl font-bold text-white tracking-tight">
               BloomNote
             </span>
