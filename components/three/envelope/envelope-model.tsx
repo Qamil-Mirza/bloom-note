@@ -1,10 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 import * as THREE from 'three';
 
 interface EnvelopeModelProps {
-  flapAngle: number; // 0 = closed, Math.PI = fully open
   accentColor?: string;
 }
 
@@ -14,7 +13,7 @@ function makeLineObj(points: THREE.Vector3[], color: string, opacity: number) {
   return new THREE.Line(geo, mat);
 }
 
-export function EnvelopeModel({ flapAngle, accentColor = '#ec4899' }: EnvelopeModelProps) {
+export const EnvelopeModel = forwardRef<THREE.Group, EnvelopeModelProps>(function EnvelopeModel({ accentColor = '#ec4899' }, flapRef) {
   const flapGeometry = useMemo(() => {
     const shape = new THREE.Shape();
     shape.moveTo(-3, 0);
@@ -107,7 +106,7 @@ export function EnvelopeModel({ flapAngle, accentColor = '#ec4899' }: EnvelopeMo
       <primitive object={bottomFoldLine} position={[0, 0, 0.09]} />
 
       {/* Flap — pivots from top edge */}
-      <group position={[0, 2, 0]} rotation={[flapAngle, 0, 0]}>
+      <group ref={flapRef} position={[0, 2, 0]}>
         <mesh geometry={flapGeometry} position={[0, 0, 0.1]}>
           <meshBasicMaterial color="#ebe4d5" side={THREE.DoubleSide} />
         </mesh>
@@ -128,4 +127,4 @@ export function EnvelopeModel({ flapAngle, accentColor = '#ec4899' }: EnvelopeMo
       </mesh>
     </group>
   );
-}
+});
