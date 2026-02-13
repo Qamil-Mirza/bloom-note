@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { OrbitControls, Text } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { EnvelopeModel } from './envelope-model';
 import { GiftModel } from '../gift-model';
 import { Lights } from '../lights';
@@ -55,6 +55,14 @@ function AnimatedScene({
     [onAnimationState]
   );
 
+  // Start animation when autoPlay becomes true
+  useEffect(() => {
+    if (autoPlay && animState === 'idle') {
+      timeRef.current = 0;
+      updateAnimState('opening');
+    }
+  }, [autoPlay, animState, updateAnimState]);
+
   const handleClick = useCallback(() => {
     if (animState === 'idle') {
       timeRef.current = 0;
@@ -90,7 +98,7 @@ function AnimatedScene({
 
       // Gift eases up smoothly
       const giftEased = easeOutQuart(popT);
-      gift.position.y = lerp(-1, 1.5, giftEased);
+      gift.position.y = lerp(-1, 0.75, giftEased);
       const s = lerp(0, 1, giftEased);
       gift.scale.set(s, s, s);
 
@@ -114,7 +122,7 @@ function AnimatedScene({
       const messageT = Math.min((t - 3.0) / 1.0, 1);
       const eased = easeOutQuart(messageT);
 
-      gift.position.y = lerp(1.5, 1.2, eased);
+      gift.position.y = lerp(0.75, 0.6, eased);
       gift.scale.set(1, 1, 1);
 
       envelope.position.z = -8;
@@ -141,18 +149,6 @@ function AnimatedScene({
           />
         </group>
 
-        {/* Guiding text — visible only before opening */}
-        {animState === 'idle' && (
-          <Text
-            position={[0, -2.8, 0.1]}
-            fontSize={0.35}
-            color="#9a9080"
-            anchorX="center"
-            anchorY="middle"
-          >
-            Tap to open
-          </Text>
-        )}
 
         {/* Gift — eases to center */}
         <group ref={giftGroupRef} position={[0, -1, 0]} scale={0}>

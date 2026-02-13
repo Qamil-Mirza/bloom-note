@@ -4,8 +4,9 @@ import { useState, useCallback } from 'react';
 import { CanvasWrapper } from '@/components/three/canvas-wrapper';
 import { SceneViewer } from '@/components/three/scene-viewer';
 import { MessageCardOverlay } from '@/components/three/message-card-overlay';
-import { ShareButton } from '@/components/ui/share-button';
-import { ViewCounter } from './view-counter';
+import { OpenGiftPrompt } from './open-gift-prompt';
+import { FloatingShareButton } from './floating-share-button';
+import { BrandWatermark } from './brand-watermark';
 import { isLegacyConfig } from '@/types/card';
 import type { Card, CardConfig } from '@/types/card';
 import type { AnimationState } from '@/components/three/envelope/envelope-scene';
@@ -52,64 +53,59 @@ export function CardDisplay({ card }: CardDisplayProps) {
 
   return (
     <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: config.theme.background }}
+      className="fixed inset-0 overflow-hidden"
+      style={{
+        backgroundColor: config.theme.background,
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingLeft: 'env(safe-area-inset-left)',
+        paddingRight: 'env(safe-area-inset-right)',
+      }}
     >
-      {/* Header */}
-      <div className="p-4 flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">BloomNote 🎁</h1>
-        </div>
-        <ViewCounter slug={card.slug} initialViews={card.views} />
+      {/* Ambient radial gradient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 50% 40%, ${config.theme.accent}18 0%, transparent 70%)`,
+        }}
+      />
+
+      {/* Full-screen canvas */}
+      <div className="absolute inset-0">
+        <CanvasWrapper
+          className="w-full h-full"
+          cameraPosition={[0, 1.5, 7]}
+          fov={45}
+        >
+          <SceneViewer
+            card={card}
+            autoPlay={hasOpened}
+            onAnimationState={handleAnimationState}
+          />
+        </CanvasWrapper>
       </div>
 
-      {/* 3D Card */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl">
-          <div
-            className="relative bg-white/50 backdrop-blur rounded-xl shadow-2xl overflow-hidden"
-            style={{ aspectRatio: '16/9' }}
-          >
-            {!hasOpened && (
-              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/20 backdrop-blur-sm">
-                <button
-                  onClick={() => setHasOpened(true)}
-                  className="px-8 py-4 bg-white rounded-full shadow-lg text-lg font-semibold hover:scale-105 transition-transform"
-                >
-                  Tap to Open Gift 🎁
-                </button>
-              </div>
-            )}
-            <CanvasWrapper
-              className="w-full h-full"
-              cameraPosition={[0, 1.5, 7]}
-              fov={45}
-            >
-              <SceneViewer
-                card={card}
-                autoPlay={hasOpened}
-                onAnimationState={handleAnimationState}
-              />
-            </CanvasWrapper>
-            <MessageCardOverlay
-              visible={showMessage}
-              message={config.message}
-              theme={config.theme}
-            />
-          </div>
-        </div>
-      </div>
+      {/* Open gift prompt */}
+      <OpenGiftPrompt
+        visible={!hasOpened}
+        accentColor={config.theme.accent}
+        onOpen={() => setHasOpened(true)}
+      />
 
-      {/* Footer */}
-      <div className="p-6 text-center space-y-4">
-        <div>
-          <ShareButton url={cardUrl} />
-        </div>
-        <p className="text-sm text-gray-600">
-          Made with <a href="/" className="text-romantic-600 hover:underline">BloomNote</a>
-          {' '}- Create your own 3D Valentine gift!
-        </p>
-      </div>
+      {/* Message overlay */}
+      <MessageCardOverlay
+        visible={showMessage}
+        message={config.message}
+        theme={config.theme}
+      />
+
+      {/* Floating share button — hidden during animation */}
+      {(animState === 'idle' || animState === 'complete') && (
+        <FloatingShareButton url={cardUrl} accentColor={config.theme.accent} />
+      )}
+
+      {/* Brand watermark */}
+      <BrandWatermark accentColor={config.theme.accent} animState={animState} />
     </div>
   );
 }
