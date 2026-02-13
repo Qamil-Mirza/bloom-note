@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { EnvelopeModel } from './envelope-model';
 import { GiftModel } from '../gift-model';
@@ -30,6 +30,19 @@ function easeOutQuart(t: number) {
 
 function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/** Adjusts camera FOV so the envelope fits on narrow/portrait screens */
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+  useEffect(() => {
+    const aspect = size.width / size.height;
+    // Base FOV 45 at landscape (aspect >= 1.2). Widen up to 65 on narrow screens.
+    const fov = aspect < 1.2 ? lerp(95, 45, (aspect - 0.5) / 0.7) : 45;
+    (camera as THREE.PerspectiveCamera).fov = fov;
+    (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
+  }, [camera, size]);
+  return null;
 }
 
 function AnimatedScene({
@@ -138,6 +151,7 @@ function AnimatedScene({
 
   return (
     <>
+      <ResponsiveCamera />
       <Lights />
 
       <group onClick={handleClick}>
