@@ -25,7 +25,6 @@ export async function POST(request: Request) {
       url: `${appUrl}/c/${card.slug}`,
     });
   } catch (error) {
-    console.error('Card creation failed:', error);
     return NextResponse.json(
       { error: 'Failed to create card' },
       { status: 500 }

@@ -46,7 +46,6 @@ function WizardContent() {
       const data = await response.json();
       router.push(`/c/${data.slug}`);
     } catch (error) {
-      console.error(error);
       alert('Failed to create card. Please try again.');
     } finally {
       setIsPublishing(false);

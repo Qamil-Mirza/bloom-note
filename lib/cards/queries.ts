@@ -23,7 +23,6 @@ export async function createCard(
     .single();
 
   if (error) {
-    console.error('Failed to create card:', error);
     throw new Error('Failed to create card');
   }
 
@@ -48,7 +47,6 @@ export async function getCard(slug: string): Promise<Card | null> {
       // Not found
       return null;
     }
-    console.error('Failed to get card:', error);
     throw new Error('Failed to get card');
   }
 
@@ -66,7 +64,6 @@ export async function incrementViews(slug: string): Promise<number> {
   });
 
   if (error) {
-    console.error('Failed to increment views:', error);
     return 0;
   }
 

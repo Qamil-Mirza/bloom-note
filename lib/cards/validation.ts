@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { MAX_MESSAGE_LENGTH } from '@/lib/utils/constants';
 
-const GIFT_PRESET_IDS = ['tulips'] as const;
+const GIFT_PRESET_IDS = ['tulips', 'roses', 'bear', 'cat', 'heart', 'earth'] as const;
 
 const CardThemeSchema = z.object({
   background: z.string().regex(/^#[0-9A-Fa-f]{6}$/),

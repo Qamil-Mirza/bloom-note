@@ -28,7 +28,7 @@ export function BrandWatermark({ accentColor, animState }: BrandWatermarkProps) 
             paddingLeft: 'env(safe-area-inset-left)',
           }}
         >
-          BloomNote
+          💌 BloomNote 
         </motion.a>
       )}
     </AnimatePresence>

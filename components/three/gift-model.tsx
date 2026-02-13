@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -54,6 +54,21 @@ function LoadedGiftModel({
     clone.position.sub(center.multiplyScalar(normalizeScale));
     return clone;
   }, [scene]);
+
+  useEffect(() => {
+    return () => {
+      clonedScene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry?.dispose();
+          if (Array.isArray(child.material)) {
+            child.material.forEach((m) => m.dispose());
+          } else {
+            child.material?.dispose();
+          }
+        }
+      });
+    };
+  }, [clonedScene]);
 
   useFrame((_, delta) => {
     if (autoRotate && groupRef.current) {

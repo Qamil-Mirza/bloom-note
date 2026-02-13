@@ -1,17 +1,31 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { LampContainer } from "@/components/ui/lamp";
 
 export default function Home() {
+  const [expanded, setExpanded] = useState(false);
+
+  const close = useCallback(() => setExpanded(false), []);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [expanded, close]);
+
   return (
     <div className="bg-slate-950 min-h-screen">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md bg-slate-950/60 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="text-2xl">🎁</span>
+            <span className="text-2xl">💌</span>
             <span className="text-xl font-bold text-white tracking-tight">
               BloomNote
             </span>
@@ -71,6 +85,64 @@ export default function Home() {
           </p>
         </motion.div>
       </LampContainer>
+
+      {/* Video Demo Section */}
+      <section className="relative z-10 -mt-48 pb-24 px-6 bg-slate-950">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            See it in action
+          </h2>
+          <p className="text-slate-400 mb-12 text-lg">
+            Watch how easy it is to create and send a 3D Valentine gift
+          </p>
+          {/* Add demo.mp4 to public/ directory */}
+          <div
+            className="rounded-2xl overflow-hidden shadow-2xl shadow-romantic-500/10 ring-1 ring-white/10 cursor-pointer transition-transform hover:scale-[1.01]"
+            onClick={() => setExpanded(true)}
+          >
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full"
+              src="/demo.mp4"
+            />
+          </div>
+
+          {/* Expanded lightbox */}
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm cursor-pointer"
+                onClick={close}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-[90vw] max-w-6xl rounded-2xl overflow-hidden ring-1 ring-white/10 cursor-default"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full"
+                    src="/demo.mp4"
+                  />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 px-6">
