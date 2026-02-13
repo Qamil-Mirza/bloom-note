@@ -16,12 +16,20 @@ export default function Home() {
               BloomNote
             </span>
           </div>
-          <Link
-            href="/create"
-            className="px-5 py-2 rounded-full bg-romantic-600 text-white text-sm font-medium hover:bg-romantic-500 transition-colors"
-          >
-            Get Started
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/credits"
+              className="text-sm text-slate-300 hover:text-white transition-colors"
+            >
+              Credits
+            </Link>
+            <Link
+              href="/create"
+              className="px-5 py-2 rounded-full bg-romantic-600 text-white text-sm font-medium hover:bg-romantic-500 transition-colors"
+            >
+              Get Started
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -76,6 +84,9 @@ export default function Home() {
           <p className="text-xs text-slate-600">
             Made with love for Valentine&apos;s Day
           </p>
+          <Link href="/credits" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
+            Credits
+          </Link>
         </div>
       </footer>
     </div>
