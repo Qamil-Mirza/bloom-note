@@ -1,4 +1,4 @@
-export type GiftPresetId = 'tulips';
+export type GiftPresetId = 'tulips' | 'roses' | 'bear' | 'cat' | 'heart' | 'earth';
 
 export interface GiftPreset {
   id: GiftPresetId;
