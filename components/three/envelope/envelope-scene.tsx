@@ -32,16 +32,35 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-/** Adjusts camera FOV so the envelope fits on narrow/portrait screens */
-function ResponsiveCamera() {
+/** Adjusts camera FOV so the envelope fits on narrow/portrait screens,
+ *  then tightens FOV after the gift is revealed so it fills more of the view. */
+function ResponsiveCamera({ animState }: { animState: AnimationState }) {
   const { camera, size } = useThree();
+  const targetFovRef = useRef<number | null>(null);
+
+  // Compute target FOV whenever size or animState changes
   useEffect(() => {
     const aspect = size.width / size.height;
-    // Base FOV 45 at landscape (aspect >= 1.2). Widen up to 65 on narrow screens.
-    const fov = aspect < 1.2 ? lerp(95, 45, (aspect - 0.5) / 0.7) : 45;
-    (camera as THREE.PerspectiveCamera).fov = fov;
-    (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
-  }, [camera, size]);
+    const giftRevealed = animState === 'message' || animState === 'complete';
+    // Wide FOV for envelope on narrow screens, tighter FOV once gift is shown
+    const maxNarrowFov = giftRevealed ? 55 : 95;
+    const fov = aspect < 1.2 ? lerp(maxNarrowFov, 45, (aspect - 0.5) / 0.7) : 45;
+    targetFovRef.current = fov;
+  }, [camera, size, animState]);
+
+  // Smoothly lerp toward target FOV each frame
+  useFrame(() => {
+    if (targetFovRef.current === null) return;
+    const cam = camera as THREE.PerspectiveCamera;
+    const diff = Math.abs(cam.fov - targetFovRef.current);
+    if (diff < 0.05) {
+      cam.fov = targetFovRef.current;
+    } else {
+      cam.fov = lerp(cam.fov, targetFovRef.current, 0.08);
+    }
+    cam.updateProjectionMatrix();
+  });
+
   return null;
 }
 
@@ -151,7 +170,7 @@ function AnimatedScene({
 
   return (
     <>
-      <ResponsiveCamera />
+      <ResponsiveCamera animState={animState} />
       <Lights />
 
       <group onClick={handleClick}>
