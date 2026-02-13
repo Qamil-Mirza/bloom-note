@@ -68,7 +68,6 @@ export default function Home() {
           <p className="text-romantic-200/60 text-center text-lg md:text-xl max-w-xl mt-6 leading-relaxed">
             Pick a 3D gift, write your Valentine&apos;s message, and share with a link.
             Watch them open an animated envelope revealing your gift.
-            Free forever.
           </p>
           <Link
             href="/create"
@@ -81,7 +80,7 @@ export default function Home() {
           </Link>
 
           <p className="mt-6 text-slate-500 text-sm">
-            Free forever · No signup required
+            Free · No signup required
           </p>
         </motion.div>
       </LampContainer>
@@ -148,17 +147,14 @@ export default function Home() {
       <footer className="border-t border-white/5 py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col items-center gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🎁</span>
+            <span className="text-lg">💌</span>
             <span className="text-sm font-medium text-slate-400">
               BloomNote
             </span>
           </div>
           <p className="text-xs text-slate-600">
-            Made with love for Valentine&apos;s Day
+            Made with love for Valentine&apos;s Day By Qamil Mirza
           </p>
-          <Link href="/credits" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">
-            Credits
-          </Link>
         </div>
       </footer>
     </div>
