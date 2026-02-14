@@ -55,7 +55,7 @@ export default function Home() {
           className="flex flex-col items-center"
         >
 
-          <h1 className="bg-gradient-to-br from-romantic-200 via-white to-romantic-300 py-4 bg-clip-text text-center text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent">
+          <h1 className="bg-gradient-to-br from-romantic-200 via-white to-romantic-300 py-4 bg-clip-text text-center text-5xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent">
             Send a 3D
             <br />
             Valentine Gift

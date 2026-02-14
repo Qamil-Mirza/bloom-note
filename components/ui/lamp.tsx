@@ -1,7 +1,10 @@
 "use client";
 import React from "react";
-import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { CanvasWrapper } from "@/components/three/canvas-wrapper";
+import { Lights } from "@/components/three/lights";
+import { GiftModel } from "@/components/three/gift-model";
+import { OrbitControls } from "@react-three/drei";
 
 export const LampContainer = ({
   children,
@@ -17,71 +20,20 @@ export const LampContainer = ({
         className
       )}
     >
-      {/* Lamp effect - absolutely positioned to center of container */}
-      <div className="absolute inset-0 flex items-center justify-center isolate z-0 -translate-y-[15vh]">
-        <div className="relative w-full h-full flex items-center justify-center scale-y-100 md:scale-y-125">
-          <motion.div
-            initial={{ opacity: 0.5, width: "10rem" }}
-            whileInView={{ opacity: 1, width: "min(30rem, 90vw)" }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            style={{
-              backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-            }}
-            className="absolute inset-auto right-1/2 h-40 md:h-56 overflow-visible w-[min(30rem,90vw)] bg-gradient-conic from-romantic-500 via-transparent to-transparent text-white [--conic-position:from_70deg_at_center_top]"
-          >
-            <div className="absolute w-[100%] left-0 bg-slate-950 h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-            <div className="absolute w-40 h-[100%] left-0 bg-slate-950 bottom-0 z-20 [mask-image:linear-gradient(to_right,white,transparent)]" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0.5, width: "10rem" }}
-            whileInView={{ opacity: 1, width: "min(30rem, 90vw)" }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            style={{
-              backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-            }}
-            className="absolute inset-auto left-1/2 h-40 md:h-56 w-[min(30rem,90vw)] bg-gradient-conic from-transparent via-transparent to-romantic-500 text-white [--conic-position:from_290deg_at_center_top]"
-          >
-            <div className="absolute w-40 h-[100%] right-0 bg-slate-950 bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
-            <div className="absolute w-[100%] right-0 bg-slate-950 h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-          </motion.div>
-          <div className="absolute top-1/2 h-48 w-full translate-y-12 scale-x-150 bg-slate-950 blur-2xl"></div>
-          <div className="absolute top-1/2 z-50 h-48 w-full bg-transparent opacity-10 backdrop-blur-md"></div>
-          <div className="absolute inset-auto z-50 h-36 w-[min(28rem,85vw)] -translate-y-1/2 rounded-full bg-romantic-500 opacity-50 blur-3xl"></div>
-          <motion.div
-            initial={{ width: "8rem" }}
-            whileInView={{ width: "16rem" }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            className="absolute inset-auto z-30 h-36 w-64 -translate-y-[6rem] rounded-full bg-romantic-400 blur-2xl"
-          ></motion.div>
-          <motion.div
-            initial={{ width: "10rem" }}
-            whileInView={{ width: "min(30rem, 90vw)" }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            className="absolute inset-auto z-50 h-0.5 w-[min(30rem,90vw)] -translate-y-[5rem] md:-translate-y-[7rem] bg-romantic-400"
-          ></motion.div>
-
-          <div className="absolute inset-auto z-40 h-44 w-full -translate-y-[10rem] md:-translate-y-[12.5rem] bg-slate-950"></div>
+      {/* 3D tulip canvas - above content */}
+      <div className="relative h-[250px] sm:h-[300px] md:h-[350px] w-full">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] rounded-full bg-romantic-500/30 blur-[100px]" />
         </div>
+        <CanvasWrapper cameraPosition={[0, 1, 4]} fov={45}>
+          <Lights />
+          <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={2} />
+          <GiftModel presetId="tulips" autoRotate={false} />
+        </CanvasWrapper>
       </div>
 
-      {/* Content - positioned below the lamp line */}
-      <div className="relative z-50 flex flex-col items-center px-5 mt-[10vh] md:mt-[5vh]">
+      {/* Content - below the tulip */}
+      <div className="relative z-50 flex flex-col items-center px-5">
         {children}
       </div>
     </div>
