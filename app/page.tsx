@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
@@ -8,6 +8,9 @@ import { LampContainer } from "@/components/ui/lamp";
 
 export default function Home() {
   const [expanded, setExpanded] = useState(false);
+  const [videoVisible, setVideoVisible] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => setExpanded(false), []);
 
@@ -19,6 +22,24 @@ export default function Home() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [expanded, close]);
+
+  useEffect(() => {
+    const container = videoContainerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVideoVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="bg-slate-950 min-h-screen">
@@ -91,17 +112,22 @@ export default function Home() {
           </p>
           {/* Add demo.mp4 to public/ directory */}
           <div
+            ref={videoContainerRef}
             className="rounded-2xl overflow-hidden shadow-2xl shadow-romantic-500/10 ring-1 ring-white/10 cursor-pointer transition-transform hover:scale-[1.01]"
             onClick={() => setExpanded(true)}
           >
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full"
-              src="/demo.mp4"
-            />
+            {videoVisible && (
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="none"
+                className="w-full"
+                src="/demo.mp4"
+              />
+            )}
           </div>
 
           {/* Expanded lightbox */}

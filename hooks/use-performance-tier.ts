@@ -41,7 +41,7 @@ export function usePerformanceTier(): PerformanceTierResult {
       case 'medium':
         return {
           tier,
-          dpr: [1, 2] as [number, number],
+          dpr: [1, 1.5] as [number, number],
           stemBoneCount: 3,
           enableBloom: false,
           enableTransmission: true,

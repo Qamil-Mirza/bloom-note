@@ -1,15 +1,17 @@
 'use client';
 
 import { Environment } from '@react-three/drei';
+import { usePerformanceTier } from '@/hooks/use-performance-tier';
 
 export function Lights() {
+  const { tier } = usePerformanceTier();
   return (
     <>
-      {/* IBL environment for realistic reflections */}
-      <Environment preset="studio" />
+      {/* IBL environment for realistic reflections — skip on low tier */}
+      {tier !== 'low' && <Environment preset="studio" />}
 
-      {/* Low ambient for shadow lift */}
-      <ambientLight intensity={0.15} />
+      {/* Ambient light — higher on low tier to compensate for missing HDR */}
+      <ambientLight intensity={tier === 'low' ? 0.5 : 0.15} />
 
       {/* Key light — warm, upper-right */}
       <directionalLight

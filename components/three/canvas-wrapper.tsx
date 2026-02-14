@@ -20,7 +20,7 @@ export function CanvasWrapper({
   cameraPosition = [0, 1.5, 7],
   fov = 45,
 }: CanvasWrapperProps) {
-  const { dpr } = usePerformanceTier();
+  const { dpr, tier } = usePerformanceTier();
 
   return (
     <div className={`relative w-full h-full ${className}`}>
@@ -28,7 +28,7 @@ export function CanvasWrapper({
         camera={{ position: cameraPosition, fov }}
         dpr={dpr}
         gl={{
-          antialias: true,
+          antialias: tier !== 'low',
           alpha: true,
           toneMapping: enablePostProcessing ? THREE.NoToneMapping : THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.0,
