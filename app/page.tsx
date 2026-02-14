@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <div className="bg-slate-950 min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md bg-slate-950/60 border-b border-white/5">
+      <nav className="fixed top-0 left-0 right-0 z-[100] bg-transparent">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Image src="/logos/bloomnotelogotransparent.png" alt="BloomNote" width={80} height={80} />
@@ -34,7 +34,7 @@ export default function Home() {
           <div className="flex items-center gap-6">
             <Link
               href="/credits"
-              className="text-sm text-slate-300 hover:text-white transition-colors"
+              className="text-sm text-slate-300 hover:text-white transition-colors px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5"
             >
               Credits
             </Link>
@@ -60,13 +60,13 @@ export default function Home() {
             <br />
             Valentine Gift
           </h1>
-          <p className="text-romantic-200/60 text-center text-lg md:text-xl max-w-xl mt-6 leading-relaxed">
+          <p className="text-romantic-200/60 text-center text-lg md:text-xl max-w-xl mt-4 sm:mt-6 leading-relaxed">
             Pick a 3D gift, write your Valentine&apos;s message, and share with a link.
             Watch them open an animated envelope revealing your gift.
           </p>
           <Link
             href="/create"
-            className="mt-10 group relative inline-flex items-center"
+            className="mt-6 sm:mt-10 group relative inline-flex items-center"
           >
             <span className="absolute inset-0 rounded-full bg-romantic-500/30 blur-xl group-hover:bg-romantic-500/50 transition-all duration-500" />
             <span className="relative px-8 py-4 rounded-full bg-gradient-to-r from-romantic-600 to-romantic-500 text-white font-semibold text-lg hover:from-romantic-500 hover:to-romantic-400 transition-all duration-300 shadow-lg shadow-romantic-500/25">
@@ -81,7 +81,7 @@ export default function Home() {
       </LampContainer>
 
       {/* Video Demo Section */}
-      <section className="relative z-10 -mt-16 sm:-mt-16 md:-mt-20 pb-24 px-6 bg-slate-950"> 
+      <section className="relative z-10 pb-24 px-6 bg-slate-950">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             See it in action

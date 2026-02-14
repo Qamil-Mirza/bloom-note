@@ -70,18 +70,23 @@ function LoadedGiftModel({
     };
   }, [clonedScene]);
 
+  const finalScale = scaleOverride ?? defaultScale;
+  const currentScale = useRef(0.01);
+
   useFrame((_, delta) => {
     if (autoRotate && groupRef.current) {
       groupRef.current.rotation.y += delta * 0.5;
     }
+    if (groupRef.current && currentScale.current < finalScale - 0.001) {
+      currentScale.current = THREE.MathUtils.lerp(currentScale.current, finalScale, 1 - Math.pow(0.05, delta));
+      groupRef.current.scale.setScalar(currentScale.current);
+    }
   });
-
-  const finalScale = scaleOverride ?? defaultScale;
 
   return (
     <group
       ref={groupRef}
-      scale={finalScale}
+      scale={0.01}
       position={position ?? [0, defaultYOffset, 0]}
     >
       <primitive object={clonedScene} />

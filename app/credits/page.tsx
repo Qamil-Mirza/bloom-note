@@ -55,7 +55,7 @@ const models = [
 export default function CreditsPage() {
   return (
     <div className="bg-slate-950 min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md bg-slate-950/60 border-b border-white/5">
+      <nav className="fixed top-0 left-0 right-0 z-[100] bg-transparent">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logos/bloomnotelogotransparent.png" alt="BloomNote" width={80} height={80} />
